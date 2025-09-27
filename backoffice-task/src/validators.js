@@ -11,7 +11,7 @@ class ProductValidator {
     const cleanedId = formatRegulatoryId(regulatoryId, country); // ocisti i formatiraj id da budemo sigurni da je dobar
     //console.log(cleanedId, "ovo je ociscen id");
 
-    const cacheKey = regulatoryId; //moguce da i ovo pravi problem u cache bugu
+    const cacheKey = `${country}:${cleanedId}`;
 
     if (this.validationCache.has(cacheKey)) {
       this.cacheHits++;

@@ -5,28 +5,28 @@ class MockDatabase {
   }
 
   async saveProduct(productData) {
-    await new Promise(resolve => setTimeout(resolve, 25));
-    
+    await new Promise((resolve) => setTimeout(resolve, 25));
+
     const productId = `PROD-${this.currentId++}`;
-    
+
     const productRecord = {
       id: productId,
       ...productData,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
-    
+
     this.products.set(productId, productRecord);
     return productId;
   }
 
   async findProduct(productId) {
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 10));
     return this.products.get(productId);
   }
 
   async findByRegulatoryId(regulatoryId) {
-    await new Promise(resolve => setTimeout(resolve, 15));
-    
+    await new Promise((resolve) => setTimeout(resolve, 15));
+
     for (const [id, product] of this.products.entries()) {
       if (product.regulatoryId === regulatoryId) {
         return product;
