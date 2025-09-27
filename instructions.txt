@@ -1,0 +1,89 @@
+# Overview
+
+This is practical coding assessment involving a pharmaceutical data management system. You'll debug legacy code and analyze support tickets.
+
+Time Allocation:
+- Part 1: Bug Investigation & Fixes
+- Part 2: Support Ticket Analysis
+
+# Instructions
+
+## Setup
+
+1. Download the technical task (provided as ZIP file)
+2. Create a public GitHub repository for your work
+3. Extract task files and set up with Node.js
+4. Read the README.md in the task files before starting
+
+## Part 1: Bug Investigation
+
+1. Run the provided test scripts to identify issues
+2. Fix bugs while maintaining backward compatibility
+3. Test your solutions work correctly
+4. Use separate branches for each bug fix
+5. Document changes with clear commit messages
+
+## Part 2: Support Ticket Analysis
+
+1. Analyze the support tickets in the TICKETS.md
+2. Prioritize tickets and determine root causes
+3. Propose technical solutions for each ticket
+4. Provide implementation estimates
+
+# GitHub Repository Requirements
+
+## Repository Structure
+
+your-repo-name/
+├── README.md                    # Your analysis and documentation
+├── src/                         # Fixed source code files
+│   ├── validators.js
+│   ├── product-processor.js
+│   ├── mock-database.js
+│   └── utils.js
+├── test-data/                   # Original test data files
+├── test.js                   # Demo file
+├── test-validation.js
+├── test-performance.js
+└── SOLUTION.md                  # Your detailed solution document
+
+## Required SOLUTION.md Format
+
+# Solution Document
+
+## Part 1: Bug Investigation & Fixes
+- Issues Identified: [List each bug found]
+- Solutions Implemented: [Explain your fixes]
+
+## Part 2: Support Ticket Analysis
+- Ticket Prioritization: [Your prioritization with reasoning]
+- Root Cause Analysis: [Investigation approach for each]
+- Proposed Solutions: [Technical solutions]
+- Implementation Estimates: [Time estimates]
+
+## Overall Assessment
+- Priority recommendations and prevention strategies
+
+## Git Workflow
+
+1. Create public repository on GitHub
+2. Initial commit with original (broken) code on main branch
+3. Create feature branches for each bug fix (e.g., fix/cache-bug, fix/performance-issue)
+4. Merge branches back to main when fixes are complete
+5. Push final solution with all documentation
+
+# Submission
+
+Send us:
+- GitHub repository URL
+
+# Notes
+
+- No internet restrictions - use any resources you need
+- Ask questions if requirements are unclear
+- Focus on practical solutions over perfect code
+- Don't over-engineer - this is a legacy system
+- Document assumptions if anything is ambiguous
+- Use meaningful branch names that describe the bug being fixed
+
+Good luck!
