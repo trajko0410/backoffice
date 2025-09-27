@@ -1,79 +1,88 @@
-const { formatRegulatoryId } = require('./utils');
+const { formatRegulatoryId } = require("./utils");
 
 class ProductValidator {
   constructor() {
-    this.supportedCountries = ['DE', 'FR', 'IT', 'ES', 'CH', 'AT', 'NL'];
+    this.supportedCountries = ["DE", "FR", "IT", "ES", "CH", "AT", "NL"];
     this.validationCache = new Map();
     this.cacheHits = 0;
   }
 
   validateRegulatoryId(regulatoryId, country) {
-    const cacheKey = regulatoryId;
-    
+    const cleanedId = formatRegulatoryId(regulatoryId, country); // ocisti i formatiraj id da budemo sigurni da je dobar
+    //console.log(cleanedId, "ovo je ociscen id");
+
+    const cacheKey = regulatoryId; //moguce da i ovo pravi problem u cache bugu
+
     if (this.validationCache.has(cacheKey)) {
       this.cacheHits++;
       return this.validationCache.get(cacheKey);
     }
 
     const patterns = {
-      'DE': /^DE-?\d{5}-?[A-Z]{4}$/i,
-      'FR': /^FR[A-Z]{2}\d{6}$/i,
-      'IT': /^IT\d{8}[A-Z]{2}$/i,
-      'ES': /^ES[A-Z]\d{7}[A-Z]$/i,
-      'CH': /^CH\d{6}[A-Z]{3}$/i,
-      'AT': /^AT[A-Z]{3}\d{5}$/i,
-      'NL': /^NL\d{4}[A-Z]{4}\d{2}$/i
+      DE: /^DE-?\d{5}-?[A-Z]{4}$/i,
+      FR: /^FR[A-Z]{2}\d{6}$/i,
+      IT: /^IT\d{8}[A-Z]{2}$/i,
+      ES: /^ES[A-Z]\d{7}[A-Z]$/i,
+      CH: /^CH\d{6}[A-Z]{3}$/i,
+      AT: /^AT[A-Z]{3}\d{5}$/i,
+      NL: /^NL\d{4}[A-Z]{4}\d{2}$/i,
     };
 
     if (!patterns[country]) {
-      const result = { valid: false, error: 'Unsupported country code' };
+      const result = { valid: false, error: "Unsupported country code" };
       this.validationCache.set(cacheKey, result);
       return result;
     }
 
-    const isValid = patterns[country].test(regulatoryId);
-    const cleanId = this.preprocessId(regulatoryId);
-    
-    const result = isValid ? 
-      { valid: true, cleanId: cleanId } : 
-      { valid: false, error: 'Invalid regulatory ID format' };
+    const isValid = patterns[country].test(cleanedId); //zamenuo sam regulatory id sa ociscenim i formatiranim id
+    //const cleanId = this.preprocessId(regulatoryId); ovo nam ne treba
+    //console.log(isValid, "isValid")
+    const result = isValid
+      ? { valid: true, cleanId: cleanedId } //koristimo formatiran id a ne obican id
+      : { valid: false, error: "Invalid regulatory ID format" };
 
     this.validationCache.set(cacheKey, result);
     return result;
   }
 
   preprocessId(id) {
-    return id.trim().toUpperCase().replace(/\s+/g, '');
+    return id.trim().toUpperCase().replace(/\s+/g, "");
   }
 
   validateProduct(productData) {
     const errors = [];
-    
+
     if (!productData.name || productData.name.length < 2) {
-      errors.push('Product name must be at least 2 characters');
+      errors.push("Product name must be at least 2 characters");
     }
 
-    if (!productData.country || !this.supportedCountries.includes(productData.country)) {
-      errors.push('Invalid or unsupported country');
+    if (
+      !productData.country ||
+      !this.supportedCountries.includes(productData.country)
+    ) {
+      errors.push("Invalid or unsupported country");
     }
 
     if (!productData.regulatoryId) {
-      errors.push('Regulatory ID is required');
+      errors.push("Regulatory ID is required");
     } else {
       try {
-        const idValidation = this.validateRegulatoryId(productData.regulatoryId, productData.country);
+        const idValidation = this.validateRegulatoryId(
+          productData.regulatoryId,
+          productData.country
+        );
         if (!idValidation.valid) {
           errors.push(idValidation.error);
         }
       } catch (e) {
-        errors.push('Regulatory ID validation error');
+        errors.push("Regulatory ID validation error");
       }
     }
 
     return {
       valid: errors.length === 0,
       errors: errors,
-      cacheHits: this.cacheHits
+      cacheHits: this.cacheHits,
     };
   }
 
