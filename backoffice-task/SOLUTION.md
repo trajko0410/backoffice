@@ -1,5 +1,10 @@
 # Solution
 
+### Time Allocation:
+
+- Part 1: Bug Investigation & Fixes -> 1 hour 30 minutes (debuging: 45 min, documentation 45 min)
+- Part 2: Support Ticket Analysis
+
 ## Part 1: Bug Investigation and Fixes
 
 ### Issues Identified
@@ -17,6 +22,12 @@
 - This bug caused a problem where regulatory ID valid for one country (e.g. Germany) was passed to other countries (e.g. France), leading to incorrect successful validations.
 
 ---
+
+#### 3. Performance Bug - Sequential Processing and duplicate Check (debuging: 20min, documentation: 15min)
+
+- Bug -> processBatch was processing products one by one with an extra setTimeout delay which slowed down batch processing significantly. Also there was no check if the product
+  already exists in the database.
+- This bug was slowing batch processing down and could potentialy dublicate data in database
 
 ### Solutions Implemented
 
@@ -37,3 +48,10 @@ const cacheKey = `${country}:${cleanedId}`;
 ```
 
 ---
+
+#### 3. Performance Bug - Sequential Processing and duplicate Check
+
+- Replaced sequential processBatch with chunked parallel processing, significantly improving speed.
+- Added a check in processSubmission to see if the product already exists in the database (findByRegulatoryId) before recording, preventing duplicates.
+
+## Part 2: Support Ticket Analysis

@@ -22,6 +22,14 @@ class ProductProcessor {
       };
     }
 
+    const existing = await this.database.findByRegulatoryId(
+      productData.regulatoryId
+    );
+    if (existing) {
+      console.log(`Product already exists in DB: ${existing.id}`);
+      return { success: true, errors: [], productId: existing.id };
+    } // Dodata je provera da ne upisuje ponovo iste podatke
+
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     const productId = await this.database.saveProduct({
@@ -39,6 +47,7 @@ class ProductProcessor {
     };
   }
 
+  /*
   // BROKEN: Sequential processing with delays - very slow!
   async processBatch(products) {
     console.log(`Starting batch processing of ${products.length} products...`);
@@ -61,6 +70,39 @@ class ProductProcessor {
       if (i < products.length - 1) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
+    }
+
+    const endTime = Date.now();
+    const duration = (endTime - startTime) / 1000;
+    console.log(`Batch processing completed in ${duration.toFixed(2)} seconds`);
+
+    return {
+      results: results,
+      stats: {
+        total: products.length,
+        successful: results.filter((r) => r.success).length,
+        failed: results.filter((r) => !r.success).length,
+        duration: duration,
+        cacheHits: this.validator.cacheHits,
+      },
+    };
+  }*/
+
+  async processBatch(products, concurrency = 5) {
+    console.log(`Starting batch processing of ${products.length} products...`);
+    const results = [];
+    const startTime = Date.now();
+
+    // Obrada paralelno po chunk-ovima
+    for (let i = 0; i < products.length; i += concurrency) {
+      const chunk = products.slice(i, i + concurrency);
+
+      // Obrada celog chunk-a paralelno
+      const chunkResults = await Promise.all(
+        chunk.map((product) => this.processSubmission(product))
+      );
+
+      results.push(...chunkResults);
     }
 
     const endTime = Date.now();
